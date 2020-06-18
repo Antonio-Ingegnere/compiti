@@ -14,7 +14,7 @@ class QueryString extends Component {
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
-                    <label>> </label>
+                    <label> # </label>
                     <input onChange={this.handleChange} value={this.state.data}></input>
                 </form>
             </div>
