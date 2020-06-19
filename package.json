@@ -1,6 +1,6 @@
 {
-  "name": "compiti7",
-  "productName": "compiti7",
+  "name": "compiti",
+  "productName": "compiti",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
@@ -34,6 +34,7 @@
     "copy-webpack-plugin": "^6.0.2",
     "css-loader": "^3.6.0",
     "electron": "9.0.4",
+    "electron-devtools-installer": "^3.0.0",
     "node-loader": "^0.6.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.43.0"

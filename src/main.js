@@ -1,5 +1,24 @@
 const { app, BrowserWindow } = require('electron');
 
+const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow
+// Keep a reference for dev mode
+let dev = true;
+// Determine the mode (dev or production)
+if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
+  dev = true
+}
+// Temporary fix for broken high-dpi scale factor on Windows (125% scaling)
+// info: https://github.com/electron/electron/issues/9691
+if (process.platform === 'win32') {
+  app.commandLine.appendSwitch('high-dpi-support', 'true')
+  app.commandLine.appendSwitch('force-device-scale-factor', '1')
+}
+
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
@@ -10,19 +29,31 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
   });
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // Don't show the app window until it is ready and loaded
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
+
+app.on('ready', () => {
+  [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS].forEach(extension => {
+    installExtension(extension)
+      .then((name) => console.log(`Added Extension: ${name}`))
+      .catch((err) => console.log('An error occurred: ', err));
+  });
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
